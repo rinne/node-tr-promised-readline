@@ -3,7 +3,7 @@
 const readline = require('readline');
 const err = require('./err.js');
 
-var PromisedReadline = function(config) {
+var TrPromisedReadline = function(config) {
 	this.rl = readline.createInterface({
 		input: process.stdin,
 		output: process.stdout
@@ -24,7 +24,7 @@ var complete = function(answer) {
 		} else if (q.options.allowedReplies === undefined) {
 			q.resolve(answer);
 		} else {
-			var ans = undefined;
+			var ans = undefined, testResult;
 			q.options.allowedReplies.some(function(x) {
 				if (typeof(x) === 'string') {
 					if (q.options.caseSensitive) {
@@ -44,12 +44,38 @@ var complete = function(answer) {
 						return true;
 					}
 				} else if (typeof(x) === 'function') {
-					var testResult = x(answer);
+					testResult = x(answer);
 					if (testResult === true) {
 						ans = answer;
 						return true;
 					} else if (typeof(testResult) === 'string') {
 						ans = testResult;
+						return true;
+					}
+				} else if ((typeof(x) === 'object') && Array.isArray(x)) {
+					if (x.some(function(x) {
+						if (typeof(x) === 'string') {
+							if (q.options.caseSensitive) {
+								if (x === answer) {
+									return true;
+								}
+							} else {
+								if (x.toLowerCase() === answer.toLowerCase()) {
+									return true;
+								}
+							}
+						} else if ((typeof(x) === 'object') && (x instanceof RegExp)) {
+							if (answer.match(x)) {
+								return true;
+							}
+						} else if (typeof(x) === 'function') {
+							if (x(answer)) {
+								return true;
+							}
+						}
+						return false;
+					})) {
+						ans = x[0];
 						return true;
 					}
 				}
@@ -76,7 +102,7 @@ var complete = function(answer) {
 	}
 }
 
-PromisedReadline.prototype.question = function(question, options) {
+TrPromisedReadline.prototype.question = function(question, options) {
 	var o = {
 		allowedReplies: undefined,
 		caseSensitive: true,
@@ -92,7 +118,10 @@ PromisedReadline.prototype.question = function(question, options) {
 							return ((typeof(x) === 'string') ||
 									(typeof(x) === 'function') ||
 									((typeof(x) === 'object') &&
-									 (x instanceof RegExp)));
+									 ((x instanceof RegExp) ||
+									  (Array.isArray(x) &&
+									   (x.length >= 1) &&
+									   (typeof(x[0]) === 'string')))));
 						});
 					} else if ((typeof (options.allowedReplies) === 'string') ||
 							   (typeof (options.allowedReplies) === 'function') ||
@@ -135,7 +164,7 @@ PromisedReadline.prototype.question = function(question, options) {
 	}.bind(this));
 }
 
-PromisedReadline.prototype.close = function() {
+TrPromisedReadline.prototype.close = function() {
 	if (this.closed) {
 		throw err('Line reader closed');
 	}
@@ -146,4 +175,4 @@ PromisedReadline.prototype.close = function() {
 	}
 }
 
-module.exports = PromisedReadline;
+module.exports = TrPromisedReadline;

@@ -7,7 +7,8 @@ Examples
 --------
 
 ```
-const r = require('tr-promised-readline');
+const TrPromisedReadline = require('tr-promised-readline');
+var r = new TrPromisedReadline();
 
 (r.question('What is your name? ')
  .then(function(res) {
@@ -22,7 +23,8 @@ const r = require('tr-promised-readline');
 And somewhat more elaborate use case.
 
 ```
-const r = require('tr-promised-readline');
+const TrPromisedReadline = require('tr-promised-readline');
+var r = new TrPromisedReadline();
 
 (Promise.all([r.question('Name: ', { failOnEmpty: true }),
               r.question('Your motto: '),
