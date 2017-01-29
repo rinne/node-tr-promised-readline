@@ -1,0 +1,34 @@
+{
+	"name": "tr-promised-readline",
+	"version": "0.0.1",
+	"description": "Promise based wrapper around readline.",
+	"main": "promisedreadline.js",
+	"scripts": {
+		"test": "node ./test/promisedreadline-test.js"
+	},
+	"engines": {
+		"node": ">=4.2.0"
+	},
+	"dependencies": {
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/rinne/node-tr-promised-readline.git"
+	},
+	"keywords": [
+		"terminal",
+		"readline",
+		"keyboard",
+		"stdio"
+	],
+	"author": {
+		"name": "Timo J. Rinne",
+		"email": "tri@iki.fi",
+		"url": "https://github.com/rinne/"
+	},
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/rinne/node-tr-promised-readline/issues"
+	},
+	"homepage": "https://github.com/rinne/node-tr-promised-readline#readme"
+}
